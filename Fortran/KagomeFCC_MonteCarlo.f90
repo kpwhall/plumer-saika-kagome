@@ -76,7 +76,7 @@ end module stack_module
 
 module input_module_3d
 ! define parameters
- integer,parameter :: L=6
+ integer,parameter :: L=12
          
   double precision, parameter :: pi=3.14159265358979
 
@@ -1000,6 +1000,7 @@ do sub_J=1,nsite
         else
 
         Jij(sub_J,sub_K)=Js/(Rij(sub_J,sub_K)*Rij(sub_J,sub_K)*Rij(sub_J,sub_K))
+        Jij(sub_K,sub_J)=Js/(Rij(sub_J,sub_K)*Rij(sub_J,sub_K)*Rij(sub_J,sub_K))
 
         endif
 
