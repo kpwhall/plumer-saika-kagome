@@ -1250,6 +1250,8 @@ do sub_I=1,nsite-1
 
         if(cluster_Spin(sub_K).and.isub(sub_K).ne.0)then
 
+        bulk_Curr=0.d0
+
         Rx_Curr=Rx(sub_I,sub_K)
         Ry_Curr=Ry(sub_I,sub_K)
         Rz_Curr=Rz(sub_I,sub_K)
@@ -1277,13 +1279,15 @@ do sub_I=1,nsite
 
         if(.not. cluster_Spin(sub_K).and.isub(sub_I).ne.0) then
 
+        surf_Curr=0.d0
+
         Rx_Curr=Rx(sub_I,sub_K)
         Ry_Curr=Ry(sub_I,sub_K)
         Rz_Curr=Rz(sub_I,sub_K)
 
         surf_Curr=3*(sx(sub_I)*Rx_Curr+sy(sub_I)*Ry_Curr+sz(sub_I)*Rz_Curr)*(sx(sub_K)*Rx_Curr+sy(sub_K)*Ry_Curr+sz(sub_K)*Rz_Curr)
         surf_Curr=surf_Curr-3*(sx_New(sub_I)*Rx_Curr+sy_New(sub_I)*Ry_Curr+sz_New(sub_I)*Rz_Curr)*(sx(sub_K)*Rx_Curr &
-	+sy(sub_K)*Ry_Curr+sz(sub_K)*Rz_Curr)
+    +sy(sub_K)*Ry_Curr+sz(sub_K)*Rz_Curr)
         surf_Curr=surf_Curr/(Rij(sub_I,sub_K)**3)
 
         dE_Surf=dE_Surf+surf_Curr
@@ -1297,7 +1301,7 @@ dE_Surf=Js*dE_Surf
 
 !Flip the cluster with probability P_Acc
 
-P_Acc=min(1.0,dexp(-(dE_Surf+dE_Bulk)/(kb*T)))
+P_Acc=min(1.0,dexp((-dE_Surf-dE_Bulk)/(kb*T)))
 
 counterrr=0
 !if(r250_(jseed).le.P_Acc) then
