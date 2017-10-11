@@ -76,7 +76,7 @@ end module stack_module
 
 module input_module_3d
 ! define parameters
- integer,parameter :: L=12
+ integer,parameter :: L=6
          
   double precision, parameter :: pi=3.14159265358979
 
@@ -1210,7 +1210,7 @@ merge(curr_Pos(3)+MODULO((MODULO(wc-1,L**2)),L),curr_Pos(3)+MODULO((MODULO(wc-1,
         expo1=expo1_1x*expo1_2x+expo1_1y*expo1_2y+expo1_1z*expo1_2z
         expo2=(-2)*(Jij(spin_Curr,wc_Prime))/(kb*T)
 
-        P_Add=max(0.0,(1-dexp(expo1))/(1-dexp(expo2)))
+        P_Add=max(0.d0,(1-dexp(expo1))/(1-dexp(expo2)))
 
         !if(r250_(jseed).le.P_Add) then
         call random_number(rand)
