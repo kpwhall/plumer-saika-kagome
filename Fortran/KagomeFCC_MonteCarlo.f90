@@ -82,7 +82,10 @@ module input_module_3d
 
   double precision :: Tmax1,Tmin1
   
-  integer,parameter    :: ntemp1=0, ntrans=1, nmeas = 50000,nsite=L*L*L
+  integer,parameter    :: ntemp1=0, ntrans=0, nmeas = 4000,nsite=L*L*L
+
+  integer, parameter :: TIME_SERIES_STEPS=100
+  integer, parameter :: BACKUP_STEPS=4000
 
   double precision, parameter :: P_CLUSTER=1.0d0
 
@@ -168,6 +171,8 @@ end module cluster_module
 
 program kag_dipole_3d
 use input_module_3d
+
+call init_random_seed() !initialize random number generator
 
 !Open(UNIT=1,FILE='temperature.input',STATUS='OLD')
 !read(1,*) Tmax1, Tmin1
@@ -311,7 +316,6 @@ if(backUp_file) then
 call spinitPre
 
 else
-Call init_random_seed()
 Call random_number(rnd)
 ran=INT(rnd*100)
 
@@ -384,7 +388,7 @@ Do jmeas=tmeas,ntrans
 call metro
 !call cluster
 
-if(Modulo(jmeas,4000).eq.0.or.jmeas.eq.tmeas) then
+if(Modulo(jmeas,BACKUP_STEPS).eq.0.or.jmeas.eq.tmeas) then
 open(unit=2, file='tranSpins.dat', status='REPLACE', action='WRITE')
 write(2, fmt=*) I2, jmeas
 do i=1,nsite
@@ -399,7 +403,7 @@ close(unit=2)
 
 !Output current state of the system for time series every so many iterations
 
-if(Modulo(jmeas,100).eq.0) then         !Every x steps, output the data.
+if(Modulo(jmeas,TIME_SERIES_STEPS).eq.0) then         !Every x steps, output the data.
 
 open(unit=2, file="timeSeries.dat",position="append",action='WRITE',status='unknown')    !Open time series data file.
 
@@ -463,7 +467,7 @@ rm2root=rm2root+dsqrt(rmx*rmx+rmy*rmy+rmz*rmz)
 
 !Output current state of the system for time series every so many iterations
 
-if(Modulo(imeas,100).eq.0) then         !Every x steps, output the data.
+if(Modulo(imeas,TIME_SERIES_STEPS).eq.0) then         !Every x steps, output the data.
 
 open(unit=2, file="timeSeries.dat",position="append",action='WRITE',status='unknown')    !Open time series data file.
 
@@ -476,7 +480,7 @@ close(unit=2)
 endif
 
 !Output current temp and spin configuration every so many iterations in case a restart is needed (Apr 21 2016) !Keep backup now works for cooling and heating up to 499? I2 iterations
-if(Modulo(imeas,4000).eq.0.or.imeas.eq.rmeas) then
+if(Modulo(imeas,BACKUP_STEPS).eq.0.or.imeas.eq.rmeas) then
 open(unit=2, file="backUpSpins.dat", status='REPLACE', action='WRITE')
 write(2, fmt=*) I2,imeas
 do i=1,nsite
